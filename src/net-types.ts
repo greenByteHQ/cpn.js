@@ -9,10 +9,16 @@ export interface Place {
   readonly id: string;
 }
 
+export enum InterpreterLanguage {
+  SML = 'sml',
+  Python = 'python',
+  JS = 'js',
+}
+
 export interface Transition {
   readonly id: string;
   readonly guard: string;
-  readonly guardLang?: 'sml' | 'python';
+  readonly guardLang?: InterpreterLanguage;
 }
 
 /** Arc shape for standard PT/TP CPN arcs. */
@@ -22,7 +28,7 @@ export interface Arc {
   readonly sourceId: string;
   readonly targetId: string;
   readonly inscription: string;
-  readonly inscriptionLang?: 'sml' | 'python';
+  readonly inscriptionLang?: InterpreterLanguage;
   readonly readArcGroupId?: string;
 }
 

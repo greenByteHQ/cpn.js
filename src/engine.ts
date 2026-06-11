@@ -9,19 +9,21 @@ import { msContains, msSubtract, msAdd, EMPTY_MULTISET } from './multiset.js';
 import type { Marking, Binding } from './types.js';
 import { evalSmlExpression, evalSmlGuard } from './sml.js';
 
+import { InterpreterLanguage } from './net-types.js';
+
 /**
  * The evaluation function injected by simulationCommands.ts.
  * For arc expressions: returns a Multiset (Map<string, number>).
  */
 export type EvalExprFn = (
   expr: string,
-  lang: 'sml' | 'python',
+  lang: InterpreterLanguage,
   binding: Binding,
 ) => Promise<Map<string, number>>;
 
 export type EvalGuardFn = (
   expr: string,
-  lang: 'sml' | 'python',
+  lang: InterpreterLanguage,
   binding: Binding,
 ) => Promise<boolean>;
 
@@ -59,16 +61,22 @@ export type FireCallbacks = {
 
 export const evalExprWithSosml: EvalExprFn = async (expr, lang, binding) => {
   if (lang !== 'sml') {
-    throw new Error(`No ${lang} expression evaluator is configured in @k1s/cpn-semantics`);
+    throw new Error(`No ${lang} expression evaluator is configured in @greenByteHQ/cpn-semantics`);
   }
   return evalSmlExpression(expr, binding);
 };
 
 export const evalGuardWithSosml: EvalGuardFn = async (expr, lang, binding) => {
-  if (lang !== 'sml') {
-    throw new Error(`No ${lang} guard evaluator is configured in @k1s/cpn-semantics`);
+  switch (lang) {
+    case 'sml':
+      return evalSmlGuard(expr, binding);
+    case 'python':
+        throw new Error(`No ${lang} guard evaluator is configured in @greenByteHQ/cpn-semantics`);
+    case 'js':
+      throw new Error(`No ${lang} guard evaluator is configured in @greenByteHQ/cpn-semantics`);
+    default:
+      throw new Error(`Unknown language ${lang} in guard expression`);
   }
-  return evalSmlGuard(expr, binding);
 };
 
 // ── Internal helpers ────────────────────────────────────────────────────────
@@ -194,7 +202,7 @@ export async function findEnabledBindings(
     // No input arcs — check guard only; binding is empty
     const b: Binding = new Map();
     if (transition.guard.trim()) {
-      const lang = transition.guardLang ?? 'sml';
+      const lang = transition.guardLang ?? InterpreterLanguage.SML;
       const guardOk = await evalGuard(transition.guard, lang, b);
       return guardOk ? [b] : [];
     }
@@ -211,7 +219,7 @@ export async function findEnabledBindings(
     candidateBindings.map(async (b) => {
       // Check all PT arc expression weights are covered by the marking
       const arcChecks = ptArcs.map(async (arc) => {
-        const lang = arc.inscriptionLang ?? 'sml';
+        const lang = arc.inscriptionLang ?? InterpreterLanguage.SML;
         const inscription = arc.inscription.trim();
         if (!inscription) return true; // empty inscription = no token consumed
         const weight = await evalExpr(inscription, lang, b);
@@ -223,7 +231,7 @@ export async function findEnabledBindings(
 
       // Check guard
       if (transition.guard.trim()) {
-        const lang = transition.guardLang ?? 'sml';
+        const lang = transition.guardLang ?? InterpreterLanguage.SML;
         const guardOk = await evalGuard(transition.guard, lang, b);
         if (!guardOk) return;
       }
@@ -259,7 +267,7 @@ export async function fire(
     if (arc.readArcGroupId) continue;
     const inscription = arc.inscription.trim();
     if (!inscription) continue;
-    const lang = arc.inscriptionLang ?? 'sml';
+    const lang = arc.inscriptionLang ?? InterpreterLanguage.SML;
     const weight = await evalExpr(inscription, lang, binding);
     const current = newMarking.get(arc.sourceId) ?? EMPTY_MULTISET;
     newMarking.set(arc.sourceId, msSubtract(current, weight));
@@ -296,7 +304,7 @@ export async function fire(
     if (arc.readArcGroupId) continue;
     const inscription = arc.inscription.trim();
     if (!inscription) continue;
-    const lang = arc.inscriptionLang ?? 'sml';
+    const lang = arc.inscriptionLang ?? InterpreterLanguage.SML;
     const weight = await evalExpr(inscription, lang, binding);
     const current = newMarking.get(arc.targetId) ?? EMPTY_MULTISET;
     newMarking.set(arc.targetId, msAdd(current, weight));
