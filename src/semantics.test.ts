@@ -1,6 +1,6 @@
 /**
- * Package-level unit tests for @k1s/cpn-semantics.
- * All imports use relative package paths (NOT @k1s/cpn-semantics self-ref).
+ * Package-level unit tests for @greenByteHQ/cpn-semantics.
+ * All imports use relative package paths (NOT @greenByteHQ/cpn-semantics self-ref).
  * All evalExpr / evalGuard are injected mocks — no Web Worker, no eval().
  */
 
@@ -15,7 +15,7 @@ import {
   msScale,
 } from './multiset.js';
 import { findEnabledBindings, fire, computeEnabledSet, evalExprWithSosml, evalGuardWithSosml } from './engine.js';
-import type { NetLike } from './net-types.js';
+import { InterpreterLanguage, type NetLike } from './net-types.js';
 import type { Marking, Binding } from './types.js';
 import type { EvalExprFn, EvalGuardFn } from './engine.js';
 
@@ -256,11 +256,11 @@ describe('fire', () => {
 
 describe('SOSML-backed SML evaluation', () => {
   it('evaluates guards with bindings', async () => {
-    await expect(evalGuardWithSosml('x + 1 = 4', 'sml', new Map([['x', '3']]))).resolves.toBe(true);
+    await expect(evalGuardWithSosml('x + 1 = 4', InterpreterLanguage.SML, new Map([['x', '3']]))).resolves.toBe(true);
   });
 
   it('evaluates multiset inscriptions with SML sub-expressions', async () => {
-    const result = await evalExprWithSosml('1`x ++ 2`(x + 1)', 'sml', new Map([['x', '3']]));
+    const result = await evalExprWithSosml('1`x ++ 2`(x + 1)', InterpreterLanguage.SML, new Map([['x', '3']]));
     expect(result).toEqual(new Map([['3', 1], ['4', 2]]));
   });
 });

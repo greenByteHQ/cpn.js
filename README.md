@@ -1,12 +1,12 @@
-# @k1s/cpn-semantics
+# @greenByteHQ/cpn-semantics
 
-[![npm](https://img.shields.io/npm/v/@k1s/cpn-semantics)](https://www.npmjs.com/package/@k1s/cpn-semantics)
+[![npm](https://img.shields.io/npm/v/@greenByteHQ/cpn-semantics)](https://www.npmjs.com/package/@greenByteHQ/cpn-semantics)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Pure **Coloured Petri Net (CPN)** simulation engine. Computes enabled bindings, fires transitions, and manages multiset token flow — with no UI, no app-specific types, and no side effects.
 
 ```bash
-npm install @k1s/cpn-semantics
+npm install @greenByteHQ/cpn-semantics
 ```
 
 ---
@@ -14,7 +14,7 @@ npm install @k1s/cpn-semantics
 ## Core Types
 
 ```ts
-import type { Place, Transition, Arc, NetLike, Marking, Binding, Multiset } from '@k1s/cpn-semantics';
+import type { Place, Transition, Arc, NetLike, Marking, Binding, Multiset } from '@greenByteHQ/cpn-semantics';
 ```
 
 `NetLike` is intentionally structural and map-based:
@@ -36,7 +36,7 @@ type Multiset = Map<string, number>;          // token key -> count
 ## Multiset Operations
 
 ```ts
-import { msAdd, msSubtract, msScale, msContains, msIsEmpty, msEquals, EMPTY_MULTISET } from '@k1s/cpn-semantics';
+import { msAdd, msSubtract, msScale, msContains, msIsEmpty, msEquals, EMPTY_MULTISET } from '@greenByteHQ/cpn-semantics';
 
 const a: Multiset = new Map([['red', 2], ['blue', 1]]);
 const b: Multiset = new Map([['red', 1]]);
@@ -57,7 +57,7 @@ EMPTY_MULTISET;      // Map {}
 ### `findEnabledBindings`
 
 ```ts
-import { findEnabledBindings } from '@k1s/cpn-semantics';
+import { findEnabledBindings } from '@greenByteHQ/cpn-semantics';
 
 const bindings: Binding[] = findEnabledBindings(
   net,         // NetLike
@@ -73,7 +73,7 @@ Returns all variable bindings under which the given transition is enabled.
 ### `computeEnabledSet`
 
 ```ts
-import { computeEnabledSet } from '@k1s/cpn-semantics';
+import { computeEnabledSet } from '@greenByteHQ/cpn-semantics';
 
 const enabled: ReadonlySet<string> =
   computeEnabledSet(net, marking, evalExpr, evalGuard);
@@ -84,7 +84,7 @@ Returns all transition IDs that are currently fireable.
 ### `fire`
 
 ```ts
-import { fire } from '@k1s/cpn-semantics';
+import { fire } from '@greenByteHQ/cpn-semantics';
 
 const newMarking: Marking = await fire(
   net,               // NetLike
@@ -106,7 +106,7 @@ SML expression and guard evaluation defaults to `@sosml/interpreter`.
 `evalExprWithSosml` supports CPN multiset inscriptions such as `1\`x ++ 2\`(x + 1)` by evaluating the SML sub-expressions with SOSML.
 
 ```ts
-import { evalExprWithSosml, evalGuardWithSosml } from '@k1s/cpn-semantics';
+import { evalExprWithSosml, evalGuardWithSosml } from '@greenByteHQ/cpn-semantics';
 
 await evalExprWithSosml('1`x ++ 2`(x + 1)', 'sml', new Map([['x', '3']]));
 await evalGuardWithSosml('x + 1 = 4', 'sml', new Map([['x', '3']]));
@@ -123,7 +123,7 @@ interpret application-specific transition classes or arc extensions; layer those
 behaviors in callbacks.
 
 ```ts
-import type { FireCallbacks } from '@k1s/cpn-semantics';
+import type { FireCallbacks } from '@greenByteHQ/cpn-semantics';
 
 const callbacks: FireCallbacks = {
   beforeFire: ({ transition, binding, marking, net }) => {
@@ -155,13 +155,13 @@ public primitives.
 Run all examples:
 
 ```bash
-pnpm --filter @k1s/cpn-semantics run examples
+pnpm --filter @greenByteHQ/cpn-semantics run examples
 ```
 
 Or build once and run an individual example:
 
 ```bash
-pnpm --filter @k1s/cpn-semantics run build
+pnpm --filter @greenByteHQ/cpn-semantics run build
 node packages/cpn-semantics/examples/traffic-light.mjs
 node packages/cpn-semantics/examples/producer-consumer.mjs
 node packages/cpn-semantics/examples/sml-integration.mjs
