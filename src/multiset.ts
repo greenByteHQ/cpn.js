@@ -97,3 +97,26 @@ export function msEquals(a: Multiset, b: Multiset): boolean {
   }
   return true;
 }
+
+/**
+ * Converts a single token value to a multiset with count 1.
+ * @param value 
+ * @returns 
+ */
+export function valueToMultiset(value: string, num: number = 1): Multiset {
+    return new Map([[value, num]]);
+}
+
+
+/**
+ * Fetched the total number of tokens in a Multiset
+ * @param ms The multiset to count tokens in.
+ * @returns The total number of tokens in the multiset.
+ */
+export function countTokensInMultiset(ms: Multiset): number {
+    let count = 0;
+    for (const c of ms.values()) {
+        count += c;
+    }
+    return count;
+}

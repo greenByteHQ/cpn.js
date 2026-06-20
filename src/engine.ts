@@ -61,7 +61,7 @@ export type FireCallbacks = {
 
 export const evalExprWithSosml: EvalExprFn = async (expr, lang, binding) => {
   if (lang !== 'sml') {
-    throw new Error(`No ${lang} expression evaluator is configured in @greenByteHQ/cpn-semantics`);
+    throw new Error(`No ${lang} expression evaluator is configured in cpn.js`);
   }
   return evalSmlExpression(expr, binding);
 };
@@ -71,9 +71,9 @@ export const evalGuardWithSosml: EvalGuardFn = async (expr, lang, binding) => {
     case 'sml':
       return evalSmlGuard(expr, binding);
     case 'python':
-        throw new Error(`No ${lang} guard evaluator is configured in @greenByteHQ/cpn-semantics`);
+        throw new Error(`No ${lang} guard evaluator is configured`);
     case 'js':
-      throw new Error(`No ${lang} guard evaluator is configured in @greenByteHQ/cpn-semantics`);
+      throw new Error(`No ${lang} guard evaluator is configured`);
     default:
       throw new Error(`Unknown language ${lang} in guard expression`);
   }
@@ -241,6 +241,22 @@ export async function findEnabledBindings(
   return enabled;
 }
 
+export async function fireRandomBinding(
+  net: NetLike,
+  marking: Marking,
+  evalExpr: EvalExprFn = evalExprWithSosml,
+  callbacks: FireCallbacks = {}
+): Promise<Marking> {
+  const enabled = await computeAllEnabledBindings(net, marking, evalExpr);
+  const enabledTransitions = [...enabled.keys()];
+  if (enabledTransitions.length === 0) return marking; // No enabled transitions
+  
+  // Pick a random enabled transition and binding
+  const tId = enabledTransitions[Math.floor(Math.random() * enabledTransitions.length)];
+  const bindings = enabled.get(tId!);
+  const b = bindings![Math.floor(Math.random() * bindings!.length)];
+  return fire(net, marking, tId!, b!, evalExpr, callbacks);
+}
 /**
  * Fire transition `transitionId` under binding `b`, returning the updated marking.
  * Assumes (transitionId, b) is enabled — throws if a place would underflow.
@@ -319,6 +335,23 @@ export async function fire(
     net,
   });
   return newMarking;
+}
+
+
+export async function computeAllEnabledBindings(
+  net: NetLike,
+  marking: Marking,
+  evalExpr: EvalExprFn = evalExprWithSosml,
+  evalGuard: EvalGuardFn = evalGuardWithSosml,
+): Promise<Map<string, Binding[]>> {
+  const result = new Map<string, Binding[]>();
+  await Promise.all(
+    [...net.transitions.keys()].map(async (tId) => {
+      const bindings = await findEnabledBindings(net, marking, tId, evalExpr, evalGuard);
+      if (bindings.length > 0) result.set(tId, bindings);
+    }),
+  );
+  return result;
 }
 
 /**
