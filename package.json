@@ -1,7 +1,7 @@
 {
-  "name": "@greenByteHQ/cpn.js",
+  "name": "@greenbytehq/cpn.js",
   "version": "0.1.0",
-  "description": "Pure JS/TS CPN impementation and simulation engine",
+  "description": "Pure JS/TS CPN implementation and simulation engine",
   "keywords": [
     "cpn",
     "coloured-petri-nets",
@@ -10,12 +10,12 @@
     "formal-methods"
   ],
   "author": "kentis",
-  "license": "(MIT OR GPL-3.0-only",
+  "license": "(MIT OR GPL-3.0-only)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kentis/CPNEditor"
+    "url": "https://github.com/greenbytehq/cpn.js.git"
   },
-  "homepage": "https://github.com/kentis/CPNEditor/tree/main/packages/cpn-semantics",
+  "homepage": "https://github.com/greenbytehq/cpn.js",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/esm/index.js",
