@@ -155,16 +155,16 @@ public primitives.
 Run all examples:
 
 ```bash
-pnpm --filter @greenbytehq/cpn.j run examples
+pnpm --filter @greenbytehq/cpn.js run examples
 ```
 
 Or build once and run an individual example:
 
 ```bash
-pnpm --filter @greenbytehq/cpn-semantics run build
-node packages/cpn-semantics/examples/traffic-light.mjs
-node packages/cpn-semantics/examples/producer-consumer.mjs
-node packages/cpn-semantics/examples/sml-integration.mjs
+pnpm --filter @greenbytehq/cpn.js run build
+node packages/cpn.js/examples/traffic-light.mjs
+node packages/cpn.js/examples/producer-consumer.mjs
+node packages/cpn.js/examples/sml-integration.mjs
 ```
 
 ### Traffic Light
@@ -173,7 +173,7 @@ One coloured token represents the current light state. Firing `advance` cycles
 `red -> green -> yellow -> red`.
 
 ```bash
-node packages/cpn-semantics/examples/traffic-light.mjs
+node packages/cpn.js/examples/traffic-light.mjs
 ```
 
 ### Bounded Producer-Consumer
@@ -183,7 +183,7 @@ This net models a bounded buffer with `slots`, `buffer`, and `consumed` places.
 `item`, restores one slot, and records the consumed item.
 
 ```bash
-node packages/cpn-semantics/examples/producer-consumer.mjs
+node packages/cpn.js/examples/producer-consumer.mjs
 ```
 
 ### SML Guard + Expression
@@ -193,7 +193,7 @@ SML guard `n mod 2 = 0`, so only even tokens are enabled. Its output inscription
 is `1\`(n div 2)`, so firing computes the half of each even token.
 
 ```bash
-node packages/cpn-semantics/examples/sml-integration.mjs
+node packages/cpn.js/examples/sml-integration.mjs
 ```
 
 Each script prints JSON step output containing the fired transition, binding,
