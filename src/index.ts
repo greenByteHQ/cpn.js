@@ -5,7 +5,7 @@ export {
   msContains, msIsEmpty, msEquals,
 } from './multiset.js';
 export type { Marking, Binding } from './types.js';
-export type { Place, Transition, Arc, NetLike } from './net-types.js';
+export type { Place, Transition, Arc, NetLike, InterpreterLanguage } from './net-types.js';
 export type {
   EvalExprFn,
   EvalGuardFn,
